@@ -470,8 +470,20 @@ set(MODE_CPPSRC
 )
 DeclareTargets(PWFM wfm_audio)
 
-# DISABLED (build error) - SubGhz Decoders
-# DISABLED (build error) - Weather Stations
+### SubGhz Decoders
+
+set(MODE_CPPSRC
+	proc_subghzd.cpp
+)
+DeclareTargets(PSGD subghzd)
+
+
+### Weather Stations
+set(MODE_CPPSRC
+	proc_weather.cpp
+)
+DeclareTargets(PWTH weather)
+
 set(MODE_FLAGS "-Os")
 
 ### Flash Utility
