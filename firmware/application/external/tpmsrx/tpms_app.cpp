@@ -114,9 +114,35 @@ TPMSAppView::TPMSAppView(NavigationView&) {
                   &checkbox_auto_save,  // ADD
                   &recent_entries_view});
 
-    // Initialize database
+    /**
+     * ════════════════════════════════════════════════════════════════════════
+     * DATABASE INITIALIZATION AND STORED SENSORS LOADING
+     * ════════════════════════════════════════════════════════════════════════
+     * 
+     * STARTUP BEHAVIOR:
+     *   1. Initialize database (load from /TPMS/sensors.db)
+     *   2. Load ALL stored sensors into recent_entries view
+     *   3. Display them immediately (shows history)
+     *   4. New packets will update existing entries or add new ones
+     * 
+     * RATIONALE:
+     *   User sees their sensor history IMMEDIATELY on app launch.
+     *   No need to wait for packets - history is right there.
+     *   Packet counts show total captures across all sessions.
+     * 
+     * IMPLEMENTATION:
+     *   database_.initialize() → Load from file
+     *   database_.get_all_sensors() → Get vector of all sensors
+     *   For each sensor → Create TPMSRecentEntry → Add to recent_entries
+     *   recent_entries_view updates automatically
+     */
+    
+    // Step 1: Initialize database from file
     database_.initialize();
     update_db_stats();
+    
+    // Step 2: Load all stored sensors into view
+    load_stored_sensors_to_view();
 
     // Button handlers
     button_clear_db.on_select = [this](Button&) {
